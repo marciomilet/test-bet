@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetVerde - Apostas Esportivas</title>
+
+    <!-- ============================================
+         GOOGLE TAG MANAGER — Cole seu snippet aqui
+         Substitua GTM-XXXXXXX pelo seu ID de container
+    ============================================ -->
+    <!--
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+    -->
+    <!-- Fim do Google Tag Manager -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0a0e13;
+            --bg-secondary: #111820;
+            --bg-tertiary: #19212d;
+            --bg-card: #1a2332;
+            --bg-card-hover: #1f2b3d;
+            --green-primary: #00e676;
+            --green-dark: #00c853;
+            --green-glow: rgba(0, 230, 118, 0.25);
+            --gold-primary: #ffd740;
+            --gold-dark: #ffab00;
+            --gold-glow: rgba(255, 215, 64, 0.2);
+            --red-live: #ff1744;
+            --red-glow: rgba(255, 23, 68, 0.4);
+            --text-primary: #e8edf3;
+            --text-secondary: #8899aa;
+            --text-muted: #556677;
+            --border-color: #1e2a3a;
+            --odd-bg: #1a2636;
+            --odd-bg-hover: #223344;
+            --odd-bg-selected: rgba(0, 230, 118, 0.12);
+            --odd-border-selected: var(--green-primary);
+            --font-display: 'Oswald', sans-serif;
+            --font-body: 'Source Sans 3', sans-serif;
+            --sidebar-width: 220px;
+            --header-height: 56px;
+            --debug-height: 180px;
+        }
+
+        html { font-size: 14px; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: var(--debug-height);
+        }
+
+        /* ── HEADER ── */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--header-height);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--green-primary), var(--gold-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: default;
+        }
+        .logo span {
+            -webkit-text-fill-color: var(--gold-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            font-family: var(--font-display);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 9px 20px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--green-primary);
+            color: var(--green-primary);
+        }
+        .btn-outline:hover {
+            background: rgba(0, 230, 118, 0.08);
+            box-shadow: 0 0 15px var(--green-glow);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--green-primary), var(--green-dark));
+            color: #0a0e13;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 20px var(--green-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: #0a0e13;
+        }
+        .btn-gold:hover {
+            box-shadow: 0 0 20px var(--gold-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-sm { padding: 6px 14px; font-size: 0.78rem; }
+
+        /* ── LAYOUT ── */
+        .layout {
+            display: flex;
+            margin-top: var(--header-height);
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: var(--debug-height);
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 16px 0;
+            z-index: 50;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            margin-top: 8px;
+        }
+
+        .sport-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+            font-size: 0.92rem;
+        }
+        .sport-item:hover {
+            background: var(--bg-tertiary);
+            border-left-color: var(--green-primary);
+        }
+        .sport-item.active {
+            background: var(--bg-tertiary);
+            border-left-color: var(--green-primary);
+            color: var(--green-primary);
+        }
+        .sport-item .icon { font-size: 1.15rem; width: 22px; text-align: center; }
+        .sport-item .count {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-primary);
+            padding: 2px 7px;
+            border-radius: 10px;
+        }
+
+        .live-dot {
+            width: 6px; height: 6px;
+            background: var(--red-live);
+            border-radius: 50%;
+            display: inline-block;
+            animation: livePulse 1.5s ease-in-out infinite;
+            margin-left: 6px;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 4px var(--red-glow); }
+            50% { opacity: 0.4; box-shadow: 0 0 8px var(--red-glow); }
+        }
+
+        /* ── MAIN CONTENT ── */
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 20px 24px;
+            min-height: calc(100vh - var(--header-height) - var(--debug-height));
+        }
+
+        /* ── BANNER ── */
+        .banner {
+            background: linear-gradient(135deg, #0d2818 0%, #112233 50%, #1a1a0d 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 32px 36px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, var(--green-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .banner::after {
+            content: '';
+            position: absolute;
+            bottom: -40%; left: 30%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .banner-tag {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gold-primary);
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .banner h1 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.15;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .banner p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .banner .btn { position: relative; }
+
+        /* ── SECTION HEADERS ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            margin-top: 8px;
+        }
+        .section-header h2 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .section-header .live-badge {
+            background: var(--red-live);
+            color: #fff;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            animation: livePulse 1.5s ease-in-out infinite;
+        }
+        .section-header .line {
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        /* ── MATCH CARDS ── */
+        .matches-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 28px;
+        }
+
+        .match-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 14px 18px;
+            transition: all 0.15s;
+        }
+        .match-card:hover { background: var(--bg-card-hover); }
+
+        .match-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .match-meta .league {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .match-body {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .match-teams {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .team-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .team-row .flag { font-size: 1.1rem; }
+
+        .match-score {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--green-primary);
+            min-width: 50px;
+            text-align: center;
+        }
+        .match-score.upcoming {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+
+        .match-time {
+            font-size: 0.75rem;
+            text-align: center;
+            color: var(--red-live);
+            font-weight: 600;
+        }
+        .match-time.pre { color: var(--text-muted); }
+
+        .odds-row {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+
+        .odd-btn {
+            background: var(--odd-bg);
+            border: 1.5px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px 12px;
+            min-width: 62px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+        }
+        .odd-btn:hover {
+            background: var(--odd-bg-hover);
+            border-color: var(--green-primary);
+        }
+        .odd-btn.selected {
+            background: var(--odd-bg-selected);
+            border-color: var(--odd-border-selected);
+        }
+        .odd-btn .label {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .odd-btn .value {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--green-primary);
+        }
+
+        /* ── MODALS ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 32px;
+            width: 100%;
+            max-width: 420px;
+            transform: translateY(20px) scale(0.97);
+            transition: transform 0.25s;
+            position: relative;
+        }
+        .modal-overlay.active .modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: color 0.15s;
+            line-height: 1;
+        }
+        .modal-close:hover { color: var(--text-primary); }
+
+        .modal h2 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .modal .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--bg-primary);
+            border: 1.5px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 3px var(--green-glow);
+        }
+        .form-group input::placeholder { color: var(--text-muted); }
+
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .amount-option {
+            background: var(--bg-primary);
+            border: 1.5px solid var(--border-color);
+            border-radius: 5px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+        .amount-option:hover {
+            border-color: var(--gold-primary);
+            background: rgba(255, 215, 64, 0.05);
+        }
+        .amount-option.selected {
+            border-color: var(--gold-primary);
+            background: rgba(255, 215, 64, 0.1);
+            color: var(--gold-primary);
+        }
+
+        .form-btn {
+            width: 100%;
+            padding: 13px;
+            margin-top: 8px;
+        }
+
+        .success-msg {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .success-msg .checkmark {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 14px;
+        }
+        .success-msg h3 {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .success-msg p { color: var(--text-secondary); font-size: 0.9rem; }
+
+        /* ── POPULAR SECTION ── */
+        .popular-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .popular-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .popular-card:hover {
+            border-color: var(--green-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .popular-card .event-name {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .popular-card .market {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        .popular-card .odd-value {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--green-primary);
+        }
+
+        /* ── DEBUG CONSOLE ── */
+        .debug-console {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: var(--debug-height);
+            background: #0c0c0c;
+            border-top: 2px solid var(--green-primary);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .debug-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: #111;
+            border-bottom: 1px solid #222;
+            flex-shrink: 0;
+        }
+        .debug-header h3 {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--green-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .debug-header h3::before {
+            content: '';
+            width: 7px; height: 7px;
+            background: var(--green-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--green-primary);
+        }
+        .debug-header .event-count {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .debug-clear {
+            background: transparent;
+            border: 1px solid #333;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            padding: 3px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: var(--font-body);
+        }
+        .debug-clear:hover { border-color: #555; color: var(--text-secondary); }
+
+        .debug-log {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.78rem;
+            line-height: 1.6;
+        }
+
+        .debug-entry {
+            display: flex;
+            gap: 12px;
+            padding: 3px 0;
+            border-bottom: 1px solid #1a1a1a;
+            animation: debugSlide 0.2s ease-out;
+        }
+        @keyframes debugSlide {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .debug-entry .time { color: #555; white-space: nowrap; }
+        .debug-entry .event-name { color: var(--gold-primary); font-weight: bold; min-width: 110px; }
+        .debug-entry .event-data { color: #7ec87e; }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2a3a4a; }
+
+        /* ── RESPONSIVENESS ── */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; }
+            .odds-row { flex-wrap: wrap; }
+            .match-body { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+         GOOGLE TAG MANAGER (noscript) — Cole aqui
+    ============================================ -->
+    <!--
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    -->
+
+    <!-- ── HEADER ── -->
+    <header class="header">
+        <div class="logo">Bet<span>Verde</span></div>
+        <div class="header-actions">
+            <button class="btn btn-gold btn-sm" onclick="openModal('deposit')">Depositar</button>
+            <button class="btn btn-outline btn-sm" onclick="openModal('login')">Entrar</button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('signup')">Criar Conta</button>
+        </div>
+    </header>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="sidebar-title">Ao Vivo <span class="live-dot"></span></div>
+        <div class="sport-item active">
+            <span class="icon">&#9917;</span> Futebol
+            <span class="count">124</span>
+        </div>
+        <div class="sport-item">
+            <span class="icon">&#127936;</span> Basquete
+            <span class="count">38</span>
+        </div>
+        <div class="sport-item">
+            <span class="icon">&#127934;</span> Tênis
+            <span class="count">52</span>
+        </div>
+
+        <div class="sidebar-title">Esportes</div>
+        <div class="sport-item">
+            <span class="icon">&#127952;</span> Vôlei
+            <span class="count">19</span>
+        </div>
+        <div class="sport-item">
+            <span class="icon">&#127955;</span> MMA/UFC
+            <span class="count">8</span>
+        </div>
+        <div class="sport-item">
+            <span class="icon">&#9918;</span> Futebol Americano
+            <span class="count">14</span>
+        </div>
+        <div class="sport-item">
+            <span class="icon">&#127935;</span> Críquete
+            <span class="count">22</span>
+        </div>
+        <div class="sport-item">
+            <span class="icon">&#9971;</span> Golfe
+            <span class="count">6</span>
+        </div>
+
+        <div class="sidebar-title">Cassino</div>
+        <div class="sport-item">
+            <span class="icon">&#127920;</span> Slots
+            <span class="count">500+</span>
+        </div>
+        <div class="sport-item">
+            <span class="icon">&#127183;</span> Ao Vivo
+            <span class="count">45</span>
+        </div>
+
+        <div class="sidebar-title">E-Sports</div>
+        <div class="sport-item">
+            <span class="icon">&#127918;</span> CS2
+            <span class="count">16</span>
+        </div>
+        <div class="sport-item">
+            <span class="icon">&#128126;</span> LoL
+            <span class="count">12</span>
+        </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main class="main">
+
+        <!-- Banner -->
+        <div class="banner">
+            <div class="banner-tag">&#9733; Oferta de Boas-Vindas</div>
+            <h1>Ganhe até R$500<br>no primeiro depósito</h1>
+            <p>Crie sua conta agora e receba 100% de bônus no seu primeiro depósito.</p>
+            <button class="btn btn-primary" onclick="openModal('signup')">Criar Conta Grátis</button>
+        </div>
+
+        <!-- Ao Vivo -->
+        <div class="section-header">
+            <h2>&#9917; Ao Vivo</h2>
+            <span class="live-badge">&#9679; Live</span>
+            <div class="line"></div>
+        </div>
+        <div class="matches-grid" id="liveMatches"></div>
+
+        <!-- Próximos Jogos -->
+        <div class="section-header">
+            <h2>&#128197; Próximos Jogos</h2>
+            <div class="line"></div>
+        </div>
+        <div class="matches-grid" id="upcomingMatches"></div>
+
+        <!-- Apostas Populares -->
+        <div class="section-header">
+            <h2>&#128293; Populares</h2>
+            <div class="line"></div>
+        </div>
+        <div class="popular-grid" id="popularBets"></div>
+
+    </main>
+
+    <!-- ── SIGNUP MODAL ── -->
+    <div class="modal-overlay" id="signupModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModals()">&times;</button>
+            <div id="signupForm">
+                <h2>Criar Conta</h2>
+                <p class="subtitle">Cadastre-se e comece a apostar em segundos</p>
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="signupName" placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="signupEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="signupPassword" placeholder="Mínimo 8 caracteres">
+                </div>
+                <div class="form-group">
+                    <label>CPF</label>
+                    <input type="text" id="signupCpf" placeholder="000.000.000-00">
+                </div>
+                <button class="btn btn-primary form-btn" onclick="handleSignup()">Criar Minha Conta</button>
+            </div>
+            <div class="success-msg" id="signupSuccess">
+                <div class="checkmark" style="background: var(--green-glow); color: var(--green-primary);">&#10003;</div>
+                <h3>Conta Criada!</h3>
+                <p>Bem-vindo ao BetVerde. Faça seu primeiro depósito.</p>
+                <button class="btn btn-gold form-btn" onclick="closeModals(); openModal('deposit');" style="margin-top:16px;">Depositar Agora</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── LOGIN MODAL ── -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModals()">&times;</button>
+            <h2>Entrar</h2>
+            <p class="subtitle">Acesse sua conta BetVerde</p>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" placeholder="Sua senha">
+            </div>
+            <button class="btn btn-primary form-btn" onclick="handleLogin()">Entrar</button>
+        </div>
+    </div>
+
+    <!-- ── DEPOSIT MODAL ── -->
+    <div class="modal-overlay" id="depositModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModals()">&times;</button>
+            <div id="depositForm">
+                <h2>Depositar</h2>
+                <p class="subtitle">Escolha o valor e o método de pagamento</p>
+                <label style="font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-secondary);display:block;margin-bottom:10px;">Valor do Depósito</label>
+                <div class="amount-grid">
+                    <div class="amount-option" data-amount="25" onclick="selectAmount(this)">R$ 25</div>
+                    <div class="amount-option" data-amount="50" onclick="selectAmount(this)">R$ 50</div>
+                    <div class="amount-option selected" data-amount="100" onclick="selectAmount(this)">R$ 100</div>
+                    <div class="amount-option" data-amount="200" onclick="selectAmount(this)">R$ 200</div>
+                    <div class="amount-option" data-amount="500" onclick="selectAmount(this)">R$ 500</div>
+                    <div class="amount-option" data-amount="1000" onclick="selectAmount(this)">R$ 1.000</div>
+                </div>
+                <div class="form-group">
+                    <label>Ou digite outro valor (R$)</label>
+                    <input type="number" id="customAmount" placeholder="Valor personalizado" min="10">
+                </div>
+                <div class="form-group">
+                    <label>Método de Pagamento</label>
+                    <select id="paymentMethod">
+                        <option value="pix">PIX (Instantâneo)</option>
+                        <option value="boleto">Boleto Bancário</option>
+                        <option value="cartao">Cartão de Crédito</option>
+                        <option value="cripto">Criptomoedas</option>
+                    </select>
+                </div>
+                <button class="btn btn-gold form-btn" onclick="handleDeposit()">Confirmar Depósito</button>
+            </div>
+            <div class="success-msg" id="depositSuccess">
+                <div class="checkmark" style="background: var(--gold-glow); color: var(--gold-primary);">&#10003;</div>
+                <h3>Depósito Confirmado!</h3>
+                <p id="depositConfirmText">R$ 100,00 via PIX</p>
+                <button class="btn btn-primary form-btn" onclick="closeModals();" style="margin-top:16px;">Começar a Apostar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── DEBUG CONSOLE ── -->
+    <div class="debug-console">
+        <div class="debug-header">
+            <h3>GTM DataLayer — Debug Console</h3>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <span class="event-count" id="eventCount">0 eventos</span>
+                <button class="debug-clear" onclick="clearDebug()">Limpar</button>
+            </div>
+        </div>
+        <div class="debug-log" id="debugLog"></div>
+    </div>
+
+    <script>
+        // ── DataLayer Init ──
+        window.dataLayer = window.dataLayer || [];
+
+        let debugEntries = 0;
+
+        function pushEvent(eventData) {
+            window.dataLayer.push(eventData);
+            logDebug(eventData);
+        }
+
+        function logDebug(data) {
+            debugEntries++;
+            const log = document.getElementById('debugLog');
+            const now = new Date();
+            const time = now.toLocaleTimeString('pt-BR', { hour12: false });
+
+            const entry = document.createElement('div');
+            entry.className = 'debug-entry';
+
+            const eventName = data.event || 'unknown';
+            const rest = Object.fromEntries(
+                Object.entries(data).filter(([k]) => k !== 'event')
+            );
+
+            entry.innerHTML = `
+                <span class="time">${time}</span>
+                <span class="event-name">${eventName}</span>
+                <span class="event-data">${JSON.stringify(rest)}</span>
+            `;
+
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            document.getElementById('eventCount').textContent = `${debugEntries} evento${debugEntries !== 1 ? 's' : ''}`;
+        }
+
+        function clearDebug() {
+            document.getElementById('debugLog').innerHTML = '';
+            debugEntries = 0;
+            document.getElementById('eventCount').textContent = '0 eventos';
+        }
+
+        // ── Page View Event ──
+        pushEvent({
+            event: 'page_viewed',
+            page_title: document.title,
+            page_location: window.location.href
+        });
+
+        // ── Modals ──
+        function openModal(type) {
+            closeModals();
+            const id = type + 'Modal';
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.add('active');
+                // Reset forms
+                if (type === 'signup') {
+                    document.getElementById('signupForm').style.display = 'block';
+                    document.getElementById('signupSuccess').style.display = 'none';
+                }
+                if (type === 'deposit') {
+                    document.getElementById('depositForm').style.display = 'block';
+                    document.getElementById('depositSuccess').style.display = 'none';
+                }
+            }
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+        }
+
+        // Close on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeModals();
+            });
+        });
+
+        // ── Signup Handler ──
+        function handleSignup() {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+
+            pushEvent({
+                event: 'sign_up',
+                method: 'email',
+                user_name: name || 'não informado',
+                user_email: email || 'não informado'
+            });
+
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('signupSuccess').style.display = 'block';
+        }
+
+        // ── Login Handler ──
+        function handleLogin() {
+            pushEvent({
+                event: 'login',
+                method: 'email'
+            });
+            closeModals();
+        }
+
+        // ── Deposit Handler ──
+        let selectedAmount = 100;
+
+        function selectAmount(el) {
+            document.querySelectorAll('.amount-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedAmount = parseInt(el.dataset.amount);
+            document.getElementById('customAmount').value = '';
+        }
+
+        function handleDeposit() {
+            const custom = document.getElementById('customAmount').value;
+            const amount = custom ? parseFloat(custom) : selectedAmount;
+            const method = document.getElementById('paymentMethod');
+            const methodValue = method.value;
+            const methodText = method.options[method.selectedIndex].text;
+
+            pushEvent({
+                event: 'deposit',
+                value: amount,
+                currency: 'BRL',
+                payment_method: methodValue
+            });
+
+            document.getElementById('depositConfirmText').textContent =
+                `R$ ${amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} via ${methodText}`;
+            document.getElementById('depositForm').style.display = 'none';
+            document.getElementById('depositSuccess').style.display = 'block';
+        }
+
+        // ── Match Data & Rendering ──
+        const liveMatches = [
+            {
+                league: 'Brasileirão Série A',
+                time: '67\'',
+                home: { name: 'Flamengo', flag: '🔴⚫' },
+                away: { name: 'Palmeiras', flag: '🟢⚪' },
+                score: '2 - 1',
+                odds: { home: 1.85, draw: 3.60, away: 4.20 }
+            },
+            {
+                league: 'Champions League',
+                time: '34\'',
+                home: { name: 'Real Madrid', flag: '⚪🟡' },
+                away: { name: 'Man City', flag: '🔵⚪' },
+                score: '1 - 1',
+                odds: { home: 2.10, draw: 3.30, away: 3.50 }
+            },
+            {
+                league: 'Premier League',
+                time: '82\'',
+                home: { name: 'Arsenal', flag: '🔴⚪' },
+                away: { name: 'Liverpool', flag: '🔴🟡' },
+                score: '0 - 2',
+                odds: { home: 6.50, draw: 4.80, away: 1.25 }
+            }
+        ];
+
+        const upcomingMatches = [
+            {
+                league: 'Libertadores',
+                time: 'Hoje 21:30',
+                home: { name: 'Boca Juniors', flag: '🔵🟡' },
+                away: { name: 'Corinthians', flag: '⚫⚪' },
+                score: null,
+                odds: { home: 2.40, draw: 3.10, away: 3.00 }
+            },
+            {
+                league: 'La Liga',
+                time: 'Amanhã 16:00',
+                home: { name: 'Barcelona', flag: '🔵🔴' },
+                away: { name: 'Atl. Madrid', flag: '🔴⚪' },
+                score: null,
+                odds: { home: 1.70, draw: 3.80, away: 4.90 }
+            },
+            {
+                league: 'Brasileirão Série A',
+                time: 'Amanhã 19:00',
+                home: { name: 'São Paulo', flag: '🔴⚫⚪' },
+                away: { name: 'Grêmio', flag: '🔵⚫⚪' },
+                score: null,
+                odds: { home: 2.20, draw: 3.20, away: 3.30 }
+            },
+            {
+                league: 'Serie A',
+                time: 'Amanhã 14:30',
+                home: { name: 'Inter Milan', flag: '🔵⚫' },
+                away: { name: 'Juventus', flag: '⚪⚫' },
+                score: null,
+                odds: { home: 2.00, draw: 3.40, away: 3.70 }
+            }
+        ];
+
+        function renderMatch(match, isLive) {
+            return `
+                <div class="match-card">
+                    <div class="match-meta">
+                        <span class="league">${match.league}</span>
+                        ${isLive ? '<span class="live-dot"></span>' : ''}
+                    </div>
+                    <div class="match-body">
+                        <div class="match-teams">
+                            <div class="team-row"><span class="flag">${match.home.flag}</span> ${match.home.name}</div>
+                            <div class="team-row"><span class="flag">${match.away.flag}</span> ${match.away.name}</div>
+                        </div>
+                        <div style="text-align:center;">
+                            ${match.score
+                                ? `<div class="match-score">${match.score}</div>`
+                                : `<div class="match-score upcoming">vs</div>`
+                            }
+                            <div class="match-time ${isLive ? '' : 'pre'}">${isLive ? '⏱ ' : ''}${match.time}</div>
+                        </div>
+                        <div class="odds-row">
+                            <div class="odd-btn" onclick="selectOdd(this, '${match.home.name}', ${match.odds.home})">
+                                <span class="label">1</span>
+                                <span class="value">${match.odds.home.toFixed(2)}</span>
+                            </div>
+                            <div class="odd-btn" onclick="selectOdd(this, 'Empate', ${match.odds.draw})">
+                                <span class="label">X</span>
+                                <span class="value">${match.odds.draw.toFixed(2)}</span>
+                            </div>
+                            <div class="odd-btn" onclick="selectOdd(this, '${match.away.name}', ${match.odds.away})">
+                                <span class="label">2</span>
+                                <span class="value">${match.odds.away.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectOdd(el, selection, odds) {
+            el.classList.toggle('selected');
+            pushEvent({
+                event: 'bet_selection',
+                selection: selection,
+                odds: odds
+            });
+        }
+
+        document.getElementById('liveMatches').innerHTML = liveMatches.map(m => renderMatch(m, true)).join('');
+        document.getElementById('upcomingMatches').innerHTML = upcomingMatches.map(m => renderMatch(m, false)).join('');
+
+        // Popular bets
+        const popularBets = [
+            { event: 'Flamengo vs Palmeiras', market: 'Ambas Marcam - Sim', odd: 1.72 },
+            { event: 'Real Madrid vs Man City', market: 'Mais de 2.5 Gols', odd: 1.90 },
+            { event: 'Boca vs Corinthians', market: 'Corinthians Classifica', odd: 3.20 },
+            { event: 'Barcelona vs Atl. Madrid', market: 'Barcelona Vence', odd: 1.70 },
+            { event: 'Arsenal vs Liverpool', market: 'Liverpool -1 Handicap', odd: 2.15 },
+            { event: 'Inter vs Juventus', market: 'Empate ao Intervalo', odd: 2.05 },
+        ];
+
+        document.getElementById('popularBets').innerHTML = popularBets.map(b => `
+            <div class="popular-card" onclick="selectPopularBet('${b.market}', ${b.odd})">
+                <div class="event-name">${b.event}</div>
+                <div class="market">${b.market}</div>
+                <div class="odd-value">${b.odd.toFixed(2)}</div>
+            </div>
+        `).join('');
+
+        function selectPopularBet(market, odd) {
+            pushEvent({
+                event: 'bet_selection',
+                selection: market,
+                odds: odd,
+                source: 'popular'
+            });
+        }
+
+        // ── Simulate Live Score Changes ──
+        setInterval(() => {
+            const btns = document.querySelectorAll('#liveMatches .odd-btn .value');
+            btns.forEach(btn => {
+                if (Math.random() > 0.85) {
+                    const current = parseFloat(btn.textContent);
+                    const change = (Math.random() - 0.5) * 0.2;
+                    const newVal = Math.max(1.05, current + change);
+                    btn.textContent = newVal.toFixed(2);
+                    btn.style.color = change > 0 ? '#4caf50' : '#ff5252';
+                    setTimeout(() => { btn.style.color = ''; }, 1500);
+                }
+            });
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -996,14 +996,23 @@
             });
         });
 
+        // ── Helpers ──
+        let currentUserId = null;
+
+        function generateId(prefix) {
+            return prefix + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+        }
+
         // ── Signup Handler ──
         function handleSignup() {
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
+            currentUserId = generateId('user');
 
             pushEvent({
                 event: 'sign_up',
                 method: 'email',
+                user_id: currentUserId,
                 user_name: name || 'não informado',
                 user_email: email || 'não informado'
             });
@@ -1038,8 +1047,12 @@
             const methodValue = method.value;
             const methodText = method.options[method.selectedIndex].text;
 
+            const txnId = generateId('txn');
+
             pushEvent({
                 event: 'deposit',
+                txn_id: txnId,
+                user_id: currentUserId || generateId('user'),
                 value: amount,
                 currency: 'BRL',
                 payment_method: methodValue
